@@ -1,0 +1,21 @@
+{
+    "terminal.integrated.profiles.windows": {
+        "MSYS2 Bash": {
+            "path": "C:\\msys64\\usr\\bin\\bash.exe",
+            "args": ["--login", "-i"],
+            "env": {
+                "MSYSTEM": "MINGW64",
+                "CHERE_INVOKING": "1"
+            }
+        }
+    },
+    "terminal.integrated.defaultProfile.windows": "MSYS2 Bash",
+    "terminal.integrated.automationProfile.windows": {
+        "path": "C:\\msys64\\usr\\bin\\bash.exe",
+        "args": ["--login", "-i"]
+    },
+    "files.associations": {
+        "*.h": "cpp",
+        "*.cpp": "cpp"
+    }
+}
