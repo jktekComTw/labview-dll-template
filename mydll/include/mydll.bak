@@ -1,0 +1,37 @@
+#ifndef MYDLL_H
+#define MYDLL_H
+
+#ifdef MYDLL_EXPORTS
+    #define MYDLL_API __declspec(dllexport)
+#else
+    #define MYDLL_API __declspec(dllimport)
+#endif
+
+extern "C" {
+    // Simple math functions
+    MYDLL_API int Add(int a, int b);
+    MYDLL_API int Multiply(int a, int b);
+    MYDLL_API void SayHello(const char* name);
+    MYDLL_API double CalculateAverage(const double* numbers, int count);
+    
+    // Calculator class wrappers (use opaque pointer pattern)
+    // 
+    
+}
+
+// C++ class (internal implementation)
+class Calculator {
+public:
+    Calculator();
+    ~Calculator();
+    
+    double add(double a, double b);
+    double subtract(double a, double b);
+    void setMemory(double value);
+    double getMemory() const;
+    
+private:
+    double memory;
+};
+
+#endif

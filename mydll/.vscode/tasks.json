@@ -4,7 +4,7 @@
         {
             "label": "Build DLL",
             "type": "shell",
-            "command": "mkdir -p build && /mingw64/bin/g++ -shared -o build/mydll.dll src/mydll.cpp -Iinclude -DMYDLL_EXPORTS -Wl,--out-implib,build/libmydll.a",
+            "command": "mkdir -p build && /mingw64/bin/g++ -shared -o build/mydll.dll src/mydll.cpp -Iinclude -DMYDLL_EXPORTS -static-libgcc -static-libstdc++ -static -Wl,--out-implib,build/libmydll.a",
             "options": {
                 "shell": {
                     "executable": "C:\\msys64\\usr\\bin\\bash.exe",
