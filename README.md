@@ -22,6 +22,171 @@ mydll/
     └── settings.json      # VS Code settings
 ```
 
+## VS Code Configuration
+
+The `.vscode` folder contains configuration files for optimal development experience:
+
+### settings.json
+
+Configures VS Code editor and terminal settings:
+
+```json
+{
+    "terminal.integrated.profiles.windows": {
+        "MSYS2 Bash": {
+            "path": "C:\\msys64\\usr\\bin\\bash.exe",
+            "args": ["--login", "-i"],
+            "env": {
+                "MSYSTEM": "MINGW64",
+                "CHERE_INVOKING": "1"
+            }
+        }
+    },
+    "terminal.integrated.defaultProfile.windows": "MSYS2 Bash",
+    "terminal.integrated.automationProfile.windows": {
+        "path": "C:\\msys64\\usr\\bin\\bash.exe",
+        "args": ["--login", "-i"]
+    },
+    "files.associations": {
+        "*.h": "cpp",
+        "*.cpp": "cpp"
+    }
+}
+```
+
+**Key Settings:**
+- **Terminal Profile**: Sets MSYS2 Bash as default terminal with MinGW64 environment
+- **File Associations**: Treats `.h` files as C++ for better IntelliSense
+- **Environment Variables**: Configures MSYSTEM for proper MinGW64 toolchain access
+
+### c_cpp_properties.json
+
+Configures C/C++ IntelliSense and code completion:
+
+```json
+{
+    "configurations": [
+        {
+            "name": "MinGW64",
+            "includePath": [
+                "${workspaceFolder}/**"
+            ],
+            "defines": [],
+            "compilerPath": "C:/msys64/mingw64/bin/g++.exe",
+            "cStandard": "c17",
+            "cppStandard": "c++17",
+            "intelliSenseMode": "windows-gcc-x64"
+        }
+    ],
+    "version": 4
+}
+```
+
+**Configuration Details:**
+- **Compiler Path**: Points to MinGW64 G++ compiler
+- **Include Paths**: Scans entire workspace for header files
+- **Standards**: Uses C17 and C++17 standards
+- **IntelliSense Mode**: Windows GCC x64 for proper syntax highlighting and completion
+
+### tasks.json
+
+Defines build and test tasks accessible via Ctrl+Shift+P → "Tasks: Run Task":
+
+```json
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Build DLL",
+            "type": "shell",
+            "command": "mkdir -p build && /mingw64/bin/g++ -shared -o build/mydll.dll src/mydll.cpp -Iinclude -DMYDLL_EXPORTS -Wl,--out-implib,build/libmydll.a",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": ["$gcc"]
+        },
+        {
+            "label": "Build Test",
+            "command": "/mingw64/bin/g++ test/main.cpp -o build/test.exe -Iinclude -Lbuild -lmydll",
+            "dependsOn": ["Build DLL"]
+        },
+        {
+            "label": "Run Test",
+            "command": "./build/test.exe",
+            "dependsOn": ["Build Test"]
+        }
+    ]
+}
+```
+
+**Available Tasks:**
+1. **Build DLL** (Ctrl+Shift+B): Compiles the shared library
+2. **Build Test**: Compiles test executable (depends on Build DLL)
+3. **Run Test**: Executes test program (depends on Build Test)
+
+**Task Features:**
+- **Problem Matchers**: Parses GCC output for errors/warnings
+- **Dependencies**: Automatic task chaining (Run Test → Build Test → Build DLL)
+- **Shell Environment**: Uses MSYS2 Bash with MinGW64 environment
+- **Working Directory**: Uses VS Code workspace folder
+
+### Recommended VS Code Extensions
+
+For optimal C/C++ development experience:
+
+1. **C/C++** (`ms-vscode.cpptools`)
+   - IntelliSense, debugging, code browsing
+
+2. **C/C++ Extension Pack** (`ms-vscode.cpptools-extension-pack`)
+   - Includes C/C++, CMake Tools, and other useful extensions
+
+3. **GitLens** (`eamodio.gitlens`)
+   - Git integration and history visualization
+
+4. **Error Lens** (`usernamehw.errorlens`)
+   - Inline error and warning display
+
+### Setting Up VS Code for This Project
+
+1. **Open Project**:
+   ```
+   File → Open Folder → Select mydll folder
+   ```
+
+2. **Install Recommended Extensions**:
+   - VS Code should prompt to install recommended extensions
+   - Or install manually from Extensions panel (Ctrl+Shift+X)
+
+3. **Verify Configuration**:
+   - Open terminal (Ctrl+`) - should default to MSYS2 Bash
+   - Check C++ IntelliSense by opening `src/mydll.cpp`
+   - Test build with Ctrl+Shift+B
+
+4. **Debugging Setup** (Optional):
+   Add `.vscode/launch.json` for debugging:
+   ```json
+   {
+       "version": "0.2.0",
+       "configurations": [
+           {
+               "name": "Debug Test",
+               "type": "cppdbg",
+               "request": "launch",
+               "program": "${workspaceFolder}/build/test.exe",
+               "cwd": "${workspaceFolder}",
+               "environment": [
+                   {"name": "PATH", "value": "${workspaceFolder}/build;${env:PATH}"}
+               ],
+               "externalConsole": false,
+               "MIMode": "gdb",
+               "miDebuggerPath": "C:/msys64/mingw64/bin/gdb.exe",
+               "preLaunchTask": "Build Test"
+           }
+       ]
+   }
+   ```
+
 ## Features
 
 This DLL template includes:
